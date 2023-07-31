@@ -24,7 +24,7 @@ Installation
 To use the logo generator application, follow the steps below:
 
 Clone the repository to your local machine using the following command:
-git clone https://github.com/your-username/logo-generator.git
+git clone git@github.com:ChrisGordon888/Challenge10_LogoSVG-Generator.git
 Ensure that you have Node.js installed on your machine.
 Open a terminal and navigate to the project's directory.
 Install the project dependencies by running the following command:

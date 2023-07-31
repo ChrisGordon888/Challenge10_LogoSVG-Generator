@@ -1,7 +1,5 @@
 import inquirer from 'inquirer';
-import svgCaptcha from 'svg-captcha';
 import fs from 'fs';
-
 
 const questions = [
     {
@@ -29,26 +27,36 @@ const questions = [
       name: 'shapeColor',
       message: 'Enter the shape color (e.g. "blue" or "#0000ff"):',
     },
-  ];
+];
 
-  inquirer.prompt(questions).then((answers) => {
+function createShapeSvg(shape, color, logoText, textColor) {
+    switch(shape) {
+        case 'circle':
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+                <circle cx="50%" cy="50%" r="50%" fill="${color}"/>
+                <text x="50%" y="50%" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" font-size="60">${logoText}</text>
+            </svg>`;
+        case 'triangle':
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+                <polygon points="100,10 190,190 10,190" fill="${color}"/>
+                <text x="50%" y="50%" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" font-size="60">${logoText}</text>
+            </svg>`;
+        case 'square':
+        default:
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+                <rect width="100%" height="100%" fill="${color}"/>
+                <text x="50%" y="50%" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" font-size="60">${logoText}</text>
+            </svg>`;
+    }
+}
+
+inquirer.prompt(questions).then((answers) => {
     const logoText = answers.text;
     const textColor = answers.textColor;
     const shape = answers.shape;
     const shapeColor = answers.shapeColor;
 
-    const captcha = svgCaptcha.create({
-      size: 6, // Number of characters in the captcha text
-      noise: 2, // Number of noise lines to add
-      color: true, // Whether to randomize the color of the text
-      background: shapeColor, // Use the user's chosen shape color as the background color
-      fontSize: 64, // Size of the font used in the captcha text
-    });
-
-    const svgTemplate = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
-      <rect width="100%" height="100%" fill="${shapeColor}"/>
-      <text x="50%" y="50%" fill="${textColor}" text-anchor="middle" font-size="60">${logoText}</text>
-    </svg>`;
+    const svgTemplate = createShapeSvg(shape, shapeColor, logoText, textColor);
 
     fs.writeFile('logo.svg', svgTemplate, (err) => {
       if (err) throw err;
